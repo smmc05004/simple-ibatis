@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- ConnectionPool 빈 등록 -->
+	<bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="username" value="hr" />
+		<property name="password" value="zxcv1234" />
+	</bean>
+	
+	<!-- Ibatis의 핵심객체 SqlMapClient 빈 등록 -->
+	<bean id="sqlMap" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="ds" />
+		<property name="configLocation" value="classpath:/META-INF/ibatis/SqlMapConfig.xml" />
+	</bean>
+	
+	<!-- 스프링에서 제공하는 Ibatis용 템플릿 클래스 빈 등록 -->
+	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+		<property name="sqlMapClient" ref="sqlMap" />
+	</bean>
+	
+	<bean id="jobDao" class="com.sample.employee.dao.JobDao">
+		<property name="template" ref="sqlMapClientTemplate" />
+	</bean>
+	
+</beans>
